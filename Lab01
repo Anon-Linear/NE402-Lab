@@ -1,0 +1,120 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Sep 16 12:34:41 2022
+
+@author: Nate Wolff
+"""
+
+#%% Initializing packages
+
+import numpy as np
+from numpy import genfromtxt
+import matplotlib.pyplot as plt
+from prettytable import PrettyTable as pt
+from scipy.stats import norm
+from scipy import stats  #Add here
+
+#%% Defining Data
+
+
+dt1 = genfromtxt('dataset1.txt')
+dt2 = genfromtxt('dataset2.txt')
+dt3 = genfromtxt('dataset3.txt')
+dt4 = genfromtxt('dataset4.txt')
+dtx = np.arange(0,5000,1)
+
+#%% Typcial Distribution Guassian Fit
+# read data from a text file. One number per line
+
+# best fit of data
+(mu1, sigma1) = norm.fit(dt1)
+(mu2, sigma2) = norm.fit(dt2)
+(mu3, sigma3) = norm.fit(dt3)
+(mu4, sigma4) = norm.fit(dt4)
+
+# the histogram of the data
+plt.figure(2)
+plt.subplot(2,2,1)
+n, bins, patches = plt.hist(dt1,bins='auto',density='true', facecolor='green', alpha=0.75,label='data')
+# add a 'best fit' line and plot
+y = stats.norm.pdf(bins,mu1,sigma1)
+plt.plot(bins, y, 'r--', linewidth=2,label='Gaussian')
+plt.xlabel('Bins')
+plt.ylabel('Probability')
+plt.title(r'$\mathrm{DT1:}\ \mu=%.3f,\ \sigma=%.3f$' %(mu1, sigma1))
+plt.legend()
+plt.grid(True)
+
+plt.subplot(2,2,2)
+n, bins, patches = plt.hist(dt2,bins='auto',density='true', facecolor='green', alpha=0.75,label='data')
+# add a 'best fit' line and plot
+y = stats.norm.pdf(bins,mu2,sigma2) #mlab.pdf is outdated
+plt.plot(bins, y, 'r--', linewidth=2,label='Gaussian')
+plt.xlabel('Bins')
+plt.ylabel('Probability')
+plt.title(r'$\mathrm{DT2:}\ \mu=%.3f,\ \sigma=%.3f$' %(mu2, sigma2))
+plt.grid(True)
+
+plt.subplot(2,2,3)
+n, bins, patches = plt.hist(dt3,bins='auto',density='true', facecolor='green', alpha=0.75,label='data')
+# add a 'best fit' line and plot
+y = stats.norm.pdf(bins,mu3,sigma3)
+plt.plot(bins, y, 'r--', linewidth=2,label='Gaussian')
+plt.xlabel('Bins')
+plt.ylabel('Probability')
+plt.title(r'$\mathrm{DT3:}\ \mu=%.3f,\ \sigma=%.3f$' %(mu3, sigma3))
+plt.grid(True)
+
+plt.subplot(2,2,4)
+n, bins, patches = plt.hist(dt4,bins='auto',density='true', facecolor='green', alpha=0.75,label='data')
+# add a 'best fit' line and plot
+y = stats.norm.pdf(bins,mu4,sigma4)
+plt.plot(bins, y, 'r--', linewidth=2,label='Gaussian')
+plt.xlabel('Bins')
+plt.ylabel('Probability')
+plt.title(r'$\mathrm{DT4:}\ \mu=%.3f,\ \sigma=%.3f$' %(mu4, sigma4))
+plt.grid(True)
+plt.tight_layout()
+plt.savefig("Distributions.png",dpi=600)
+plt.show()
+
+#%%
+"""
+Analysis of the Data
+"""
+#%% The Mean
+print('To analyze which plot is what kind of distribution we should look at the mean first')
+dt1_m = np.mean(dt1)
+dt2_m = np.mean(dt2)
+dt3_m = np.mean(dt3)
+dt4_m = np.round(np.mean(dt4),4)
+
+#%% The Median
+dt1_mn = np.median(dt1)
+dt2_mn = np.median(dt2)
+dt3_mn = np.median(dt3)
+dt4_mn = np.round(np.median(dt4),2)
+
+#%% The Range
+dt1_r = max(dt1)-min(dt1)
+dt2_r = max(dt2)-min(dt2)
+dt3_r = max(dt3)-min(dt3)
+dt4_r = np.round(max(dt4)-min(dt4),1)
+
+#%% The STD
+print('Now with the STD we can hopefully plot the archetype of the \
+3 different graphs to get an match')
+dt1_std = np.round(np.std(dt1),4)
+dt2_std = np.round(np.std(dt2),4)
+dt3_std = np.round(np.std(dt3),4)
+dt4_std = np.round(np.std(dt4),4)
+
+#%% The Data Table
+std = pt()
+std.field_names = ["Distribution","Mean", "Median","Range","Standard Deviation"]
+std.add_row([1,dt1_m,dt1_mn,dt1_r,dt1_std])
+std.add_row([2,dt2_m,dt2_mn,dt2_r,dt2_std])
+std.add_row([3,dt3_m,dt3_mn,dt3_r,dt3_std])
+std.add_row([4,dt4_m,dt4_mn,dt4_r,dt4_std])
+print(std)
+
